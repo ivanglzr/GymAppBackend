@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import { loginUser } from "./controllers/user.controller.js";
+import { registerUser } from "./controllers/user.controller.js";
 
 const app = express();
 app.disable("x-powered-by");
@@ -12,6 +12,6 @@ app.get("/test", (req, res) => {
   return res.status(200).json({ message: "Hola" });
 });
 
-app.post("/login", loginUser);
+app.post("/register", registerUser);
 
 export default app;
