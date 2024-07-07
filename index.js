@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 import app from "./app.js";
 
-const URI = "mongodb://localhost:27017/gym-app";
-const PORT = process.env.PORT ?? 3900;
+import { URI, PORT } from "./config.js";
 
 mongoose
   .connect(URI, {
