@@ -32,8 +32,20 @@ const loginFormSchema = z.object({
   password: z.string().min(6),
 });
 
+const changeUserDataSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  age: z.number().optional(),
+  weight: z.number().optional(),
+  height: z.number().optional(),
+});
+
 export function validateUser(user) {
   return userSchema.safeParse(user);
+}
+
+export function validatePartialUser(user) {
+  return userSchema.partial().safeParse(user);
 }
 
 export function validateTraining(training) {
@@ -42,4 +54,8 @@ export function validateTraining(training) {
 
 export function validateLoginForm(loginForm) {
   return loginFormSchema.safeParse(loginForm);
+}
+
+export function validateChangeUserData(userData) {
+  return changeUserDataSchema.safeParse(userData);
 }

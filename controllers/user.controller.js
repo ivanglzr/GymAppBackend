@@ -3,10 +3,12 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 
 import {
+  validateChangeUserData,
   validateLoginForm,
-  validateTraining,
+  validatePartialUser,
   validateUser,
 } from "../schemas/user.schema.js";
+
 import { statusMessages, SALT_ROUNDS } from "../config.js";
 
 export async function postUser(req, res) {
@@ -68,7 +70,7 @@ export async function loginUser(req, res) {
 
     const userInDb = await User.findOne({ email });
 
-    if (userInDb === null || userInDb === undefined) {
+    if (!userInDb) {
       return res.status(404).json({
         status: statusMessages.error,
         message: "User not found",
@@ -96,7 +98,7 @@ export async function loginUser(req, res) {
   }
 }
 
-export async function postTraining(req, res) {
+export async function putUser(req, res) {
   const { id } = req.params;
 
   if (id === undefined || id === null || id.length !== 24) {
@@ -106,7 +108,7 @@ export async function postTraining(req, res) {
     });
   }
 
-  const { data, error } = validateTraining(req.body);
+  const { data, error } = validateChangeUserData(req.body);
 
   if (error) {
     return res.status(400).json({
@@ -115,27 +117,31 @@ export async function postTraining(req, res) {
     });
   }
 
+  if (Object.keys(data).length === 0) {
+    return res.status(400).json({
+      status: statusMessages.error,
+      message: "There isn't any data",
+    });
+  }
+
   try {
-    const user = await User.findById(id);
+    const user = await User.findByIdAndUpdate(id, { ...data });
 
-    const newTrainings = user.trainings.push(data);
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
 
-    await User.findOneAndUpdate(
-      { _id: id },
-      {
-        ...user,
-        trainings: newTrainings,
-      }
-    );
-
-    return res.status(201).json({
+    return res.json({
       status: statusMessages.success,
-      message: "Training added",
+      message: "User updated",
     });
   } catch (err) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while posting the training",
+      message: "An error ocurred while editing user",
     });
   }
 }
