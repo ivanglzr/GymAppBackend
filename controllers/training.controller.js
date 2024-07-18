@@ -4,10 +4,12 @@ import { statusMessages } from "../config.js";
 
 import { validateTraining } from "../schemas/user.schema.js";
 
+import { validateId } from "../functions.js";
+
 export async function postTraining(req, res) {
   const { id } = req.params;
 
-  if (id === undefined || id === null || id.length !== 24) {
+  if (validateId(id)) {
     return res.status(400).json({
       status: statusMessages.error,
       message: "Id isn't valid",
@@ -37,10 +39,23 @@ export async function postTraining(req, res) {
       status: statusMessages.success,
       message: "Training added",
     });
-  } catch (err) {
+  } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
       message: "An error ocurred while posting the training",
     });
   }
+}
+
+export async function getTraining(req, res) {
+  const { id, trainingId } = req.params;
+
+  if (validateId(id) || validateId(trainingId)) {
+    return res.status(400).json({
+      status: statusMessages.error,
+      message: "Id isn't valid",
+    });
+  }
+
+  return res.json({ a: 1 });
 }
