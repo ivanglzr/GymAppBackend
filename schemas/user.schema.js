@@ -1,21 +1,6 @@
 import { z } from "zod";
 
-const exerciseSchema = z.array(
-  z.object({
-    name: z.string(),
-    sets: z.array(
-      z.object({
-        weight: z.number(),
-        reps: z.number(),
-      })
-    ),
-  })
-);
-
-const trainingsSchema = z.object({
-  duration: z.number(),
-  exercises: exerciseSchema,
-});
+import { trainingsSchema } from "./training.schema.js";
 
 const userSchema = z.object({
   name: z.string(),
@@ -46,10 +31,6 @@ export function validateUser(user) {
 
 export function validatePartialUser(user) {
   return userSchema.partial().safeParse(user);
-}
-
-export function validateTraining(training) {
-  return trainingsSchema.safeParse(training);
 }
 
 export function validateLoginForm(loginForm) {

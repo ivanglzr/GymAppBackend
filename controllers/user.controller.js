@@ -10,13 +10,11 @@ import {
 
 import { statusMessages, SALT_ROUNDS } from "../config.js";
 
-import { validateId, validatePassword } from "../functions.js";
-
 export async function postUser(req, res) {
-  const { data, error } = validateUser(req.body);
+  const { data, error } = validateUser(req.body.user);
 
   if (error) {
-    return res.status(400).json({
+    return res.status(422).json({
       status: statusMessages.error,
       message: "User data isn't valid",
     });
@@ -60,7 +58,7 @@ export async function loginUser(req, res) {
   const { data, error } = validateLoginForm(req.body);
 
   if (error) {
-    return res.status(400).json({
+    return res.status(422).json({
       status: statusMessages.error,
       message: "Data isn't valid",
     });
@@ -78,7 +76,7 @@ export async function loginUser(req, res) {
       });
     }
 
-    const isPasswordValid = await validatePassword(password, userInDb.password);
+    const isPasswordValid = await bcrypt.compare(password, userInDb.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -102,17 +100,10 @@ export async function loginUser(req, res) {
 export async function putUser(req, res) {
   const { id } = req.params;
 
-  if (validateId(id)) {
-    return res.status(400).json({
-      status: statusMessages.error,
-      message: "Id isn't valid",
-    });
-  }
-
   const { data, error } = validateChangeUserData(req.body.user);
 
   if (error) {
-    return res.status(400).json({
+    return res.status(422).json({
       status: statusMessages.error,
       message: "Data isn't valid",
     });
@@ -126,36 +117,14 @@ export async function putUser(req, res) {
   }
 
   try {
-    const userInDb = await User.findById(id);
+    const user = await User.findByIdAndUpdate(id, { ...data });
 
-    if (!userInDb) {
+    if (!user) {
       return res.status(404).json({
         status: statusMessages.error,
         message: "User not found",
       });
     }
-
-    const { password } = req.body;
-
-    if (!password || typeof password !== "string") {
-      return res.status(400).json({
-        status: statusMessages.error,
-        message: "Password isn't valid",
-      });
-    }
-
-    const { password: userPassword } = userInDb;
-
-    const isPasswordValid = await validatePassword(password, userPassword);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        status: statusMessages.error,
-        message: "Unauthorized",
-      });
-    }
-
-    await User.findByIdAndUpdate(id, { ...data });
 
     return res.json({
       status: statusMessages.success,
@@ -172,38 +141,13 @@ export async function putUser(req, res) {
 export async function deleteUser(req, res) {
   const { id } = req.params;
 
-  if (validateId(id)) {
-    return res.status(400).json({
-      status: statusMessages.error,
-      message: "Id isn't valid",
-    });
-  }
-
   try {
-    const userInDb = await User.findById(id);
+    const user = await User.findByIdAndDelete(id);
 
-    if (!userInDb) {
+    if (!user) {
       return res.status(404).json({
         status: statusMessages.error,
         message: "User not found",
-      });
-    }
-
-    const { password } = req.body;
-
-    if (!password || typeof password !== "string") {
-      return res.status(400).json({
-        status: statusMessages.error,
-        message: "Password isn't valid",
-      });
-    }
-
-    const isPasswordValid = await validatePassword(password, userInDb.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        status: statusMessages.error,
-        message: "Unauthorized",
       });
     }
 

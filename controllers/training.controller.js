@@ -2,24 +2,69 @@ import User from "../models/user.model.js";
 
 import { statusMessages } from "../config.js";
 
-import { validateTraining } from "../schemas/user.schema.js";
+import {
+  validateTraining,
+  validatePartialTraining,
+} from "../schemas/training.schema.js";
 
-import { validateId } from "../functions.js";
+export async function getTraining(req, res) {
+  const { id, trainingId } = req.params;
 
-export async function postTraining(req, res) {
-  const { id } = req.params;
-
-  if (validateId(id)) {
+  if (trainingId && trainingId.length !== 24) {
     return res.status(400).json({
       status: statusMessages.error,
       message: "Id isn't valid",
     });
   }
 
-  const { data, error } = validateTraining(req.body);
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    const { trainings } = user;
+
+    if (trainings.length === 0) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User hasn't any trainings",
+      });
+    }
+
+    if (!trainingId) {
+      return res.json({ status: statusMessages.success, trainings });
+    }
+
+    const training = trainings.find((e) => e._id.toString() === trainingId);
+
+    if (!training) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "Training not found",
+      });
+    }
+
+    return res.json({ status: statusMessages.success, training });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error ocurred while getting trainings",
+    });
+  }
+}
+
+export async function postTraining(req, res) {
+  const { id } = req.params;
+
+  const { data, error } = validateTraining(req.body.training);
 
   if (error) {
-    return res.status(400).json({
+    return res.status(422).json({
       status: statusMessages.error,
       message: "Data isn't valid",
     });
@@ -27,6 +72,13 @@ export async function postTraining(req, res) {
 
   try {
     const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
 
     const newTrainings = user.trainings.push(data);
 
@@ -47,15 +99,99 @@ export async function postTraining(req, res) {
   }
 }
 
-export async function getTraining(req, res) {
+export async function putTraining(req, res) {
   const { id, trainingId } = req.params;
 
-  if (validateId(id) || validateId(trainingId)) {
-    return res.status(400).json({
+  const { data, error } = validatePartialTraining(req.body.training);
+
+  if (error) {
+    return res.status(422).json({
       status: statusMessages.error,
-      message: "Id isn't valid",
+      message: "Data isn't valid",
     });
   }
 
-  return res.json({ a: 1 });
+  if (Object.keys(data).length === 0) {
+    return res.status(400).json({
+      status: statusMessages.error,
+      message: "There isn't any data",
+    });
+  }
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    const trainingIndex = user.trainings.findIndex((e) => e._id);
+
+    if (trainingIndex === -1) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "Training not found",
+      });
+    }
+
+    const newTrainings = user.trainings;
+    newTrainings[trainingIndex] = data;
+
+    await User.findByIdAndUpdate(id, { trainings: newTrainings });
+
+    return res.json({
+      status: statusMessages.success,
+      message: "Training updated",
+    });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error ocurred while editing the training",
+    });
+  }
+}
+
+export async function deleteTraining(req, res) {
+  const { id, trainingId } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    const newTrainings = user.trainings;
+
+    const trainingIndex = newTrainings.findIndex(
+      (e) => e._id.toString() === trainingId
+    );
+
+    if (trainingId === -1) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "Training not found",
+      });
+    }
+
+    newTrainings.splice(trainingIndex, 1);
+
+    await User.findByIdAndUpdate(id, { trainings: newTrainings });
+
+    return res.json({
+      status: statusMessages.success,
+      message: "Training deleted",
+    });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error ocurred while deleting the training",
+    });
+  }
 }

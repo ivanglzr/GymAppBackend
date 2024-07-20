@@ -1,14 +1,16 @@
+import "dotenv/config";
+
 import mongoose from "mongoose";
 
 import app from "./app.js";
 
-import { URI, PORT } from "./config.js";
-
 mongoose
-  .connect(URI, {
+  .connect(process.env.DB_URI, {
     family: 4,
   })
   .then(() => console.log("Connected to DB"))
   .catch(() => console.error("Conexion failed"));
 
-app.listen(PORT, () => console.log("Server listening on port", PORT));
+app.listen(process.env.PORT, () =>
+  console.log("Server listening on port", process.env.PORT)
+);
