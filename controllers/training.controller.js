@@ -80,7 +80,9 @@ export async function postTraining(req, res) {
       });
     }
 
-    const newTrainings = user.trainings.push(data);
+    const newTrainings = user.trainings;
+
+    newTrainings.push(data);
 
     await User.findByIdAndUpdate(id, {
       ...user,

@@ -18,6 +18,8 @@ import {
   putTraining,
 } from "./controllers/training.controller.js";
 
+import { postExercise } from "./controllers/exercise.controller.js";
+
 const app = express();
 
 app.disable("x-powered-by");
@@ -38,5 +40,7 @@ app.put("/user/:id/training/:trainingId", putTraining);
 
 app.delete("/user/:id", deleteUser);
 app.delete("/user/:id/training/:trainingId", deleteTraining);
+
+app.post("/exercise", postExercise);
 
 export default app;

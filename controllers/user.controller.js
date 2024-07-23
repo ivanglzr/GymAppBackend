@@ -36,7 +36,7 @@ export async function postUser(req, res) {
 
     if (userInDb.length > 0) {
       return res
-        .status(400)
+        .status(409)
         .json({ status: "error", message: "User already exists in DB" });
     }
 
