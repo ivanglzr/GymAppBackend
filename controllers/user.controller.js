@@ -10,6 +10,75 @@ import {
 
 import { statusMessages, SALT_ROUNDS } from "../config.js";
 
+export async function loginUser(req, res) {
+  const { data, error } = validateLoginForm(req.body);
+
+  if (error) {
+    return res.status(422).json({
+      status: statusMessages.error,
+      message: "Data isn't valid",
+    });
+  }
+
+  try {
+    const { email, password } = data;
+
+    const userInDb = await User.findOne({ email });
+
+    if (!userInDb) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, userInDb.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        status: statusMessages.error,
+        message: "Login unauthorized",
+      });
+    }
+
+    return res.json({
+      status: statusMessages.success,
+      message: "Authorized",
+    });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error ocurred while login in",
+    });
+  }
+}
+
+export async function getUser(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    return res.json({
+      status: statusMessages.success,
+      message: "User found",
+      user,
+    });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error ocurred while finding the user",
+    });
+  }
+}
+
 export async function postUser(req, res) {
   const { data, error } = validateUser(req.body.user);
 
@@ -50,49 +119,6 @@ export async function postUser(req, res) {
     return res.status(500).json({
       status: statusMessages.error,
       message: "An error ocurred while registering the new user",
-    });
-  }
-}
-
-export async function loginUser(req, res) {
-  const { data, error } = validateLoginForm(req.body);
-
-  if (error) {
-    return res.status(422).json({
-      status: statusMessages.error,
-      message: "Data isn't valid",
-    });
-  }
-
-  try {
-    const { email, password } = data;
-
-    const userInDb = await User.findOne({ email });
-
-    if (!userInDb) {
-      return res.status(404).json({
-        status: statusMessages.error,
-        message: "User not found",
-      });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, userInDb.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        status: statusMessages.error,
-        message: "Login unauthorized",
-      });
-    }
-
-    return res.json({
-      status: statusMessages.success,
-      message: "Authorized",
-    });
-  } catch (_) {
-    return res.status(500).json({
-      status: statusMessages.error,
-      message: "An error ocurred while login in",
     });
   }
 }

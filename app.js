@@ -5,10 +5,11 @@ import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { authenticateTrainingId } from "./middlewares/authenticateTrainingId.js";
 
 import {
-  deleteUser,
   loginUser,
+  getUser,
   postUser,
   putUser,
+  deleteUser,
 } from "./controllers/user.controller.js";
 
 import {
@@ -30,6 +31,7 @@ app.use("/user/:id", authenticateUser);
 app.use("/user/:id/training/:trainingId", authenticateTrainingId);
 
 app.get("/login", loginUser);
+app.get("/user/:id", getUser);
 app.get("/user/:id/training/:trainingId?", getTraining);
 
 app.post("/user", postUser);

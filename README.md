@@ -26,8 +26,7 @@ age,
 weight,
 height,
 trainings
-},
-password
+}
 }
 
 ### POST /user/:id/training
