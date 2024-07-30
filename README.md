@@ -8,12 +8,7 @@
 password: "x"
 }
 
-### GET /login
-
-{
-email,
-password
-}
+### GET /login?email&password
 
 ### POST /user
 

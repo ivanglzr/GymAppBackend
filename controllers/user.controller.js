@@ -1,4 +1,7 @@
+import "dotenv/config";
+
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import User from "../models/user.model.js";
 
@@ -41,10 +44,22 @@ export async function loginUser(req, res) {
       });
     }
 
-    return res.json({
-      status: statusMessages.success,
-      message: "Authorized",
+    const token = jwt.sign({ id: userInDb._id }, process.env.SECRET_KEY, {
+      expiresIn: "1h",
+      algorithm: "HS512",
     });
+
+    return res
+      .cookie("access_token", token, {
+        httpOnly: true, // Evita acceso a la cookie desde JavaScript del lado del cliente
+        secure: process.env.NODE_ENV === "production", // Asegúrate de usar https en producción
+        sameSite: "lax", // Ajusta según tus necesidades
+        maxAge: 60 * 60 * 1000, // 1 hora
+      })
+      .json({
+        status: statusMessages.success,
+        message: "Authorized",
+      });
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
@@ -53,7 +68,59 @@ export async function loginUser(req, res) {
   }
 }
 
-export async function getUser(req, res) {
+export async function getUserByToken(req, res) {
+  const token = req.cookies.access_token;
+
+  console.log(token);
+
+  if (!token) {
+    return res.status(401).json({
+      status: statusMessages.error,
+      message: "Token is missing",
+    });
+  }
+
+  try {
+    const { id } = jwt.verify(token, process.env.SECRET_KEY);
+
+    if (!id) {
+      return res.status(400).json({
+        status: statusMessages.error,
+        message: "Id is missing",
+      });
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    const userToSend = {
+      name: user.name,
+      age: user.age,
+      weight: user.weight,
+      height: user.height,
+      trainings: user.trainings,
+    };
+
+    return res.json({
+      status: statusMessages.success,
+      message: "User sent",
+      user: userToSend,
+    });
+  } catch (_) {
+    return res.status(401).json({
+      status: statusMessages.error,
+      message: "Unauthorized",
+    });
+  }
+}
+
+export async function getUserById(req, res) {
   const { id } = req.params;
 
   try {

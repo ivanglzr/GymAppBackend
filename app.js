@@ -1,12 +1,14 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { authenticateTrainingId } from "./middlewares/authenticateTrainingId.js";
 
 import {
   loginUser,
-  getUser,
+  getUserById,
+  getUserByToken,
   postUser,
   putUser,
   deleteUser,
@@ -25,15 +27,22 @@ const app = express();
 
 app.disable("x-powered-by");
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Asegúrate de que coincide con el origen del cliente
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 
 app.use("/user/:id", authenticateUser);
 app.use("/user/:id/training/:trainingId", authenticateTrainingId);
 
-app.get("/login", loginUser);
-app.get("/user/:id", getUser);
+app.get("/user", getUserByToken);
+app.get("/user/:id", getUserById);
 app.get("/user/:id/training/:trainingId?", getTraining);
 
+app.post("/login", loginUser);
 app.post("/user", postUser);
 app.post("/user/:id/training", postTraining);
 

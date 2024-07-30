@@ -14,7 +14,11 @@ export async function authenticateUser(req, res, next) {
     });
   }
 
-  const { password } = req.body;
+  let password = req.body.password;
+
+  if (req.method === "GET") {
+    password = req.query.password;
+  }
 
   if (!password) {
     return res.status(401).json({
