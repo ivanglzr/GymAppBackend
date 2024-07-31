@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
+import "dotenv/config";
 
-import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 import { statusMessages } from "../config.js";
 
@@ -14,34 +14,35 @@ export async function authenticateUser(req, res, next) {
     });
   }
 
-  let password = req.body.password;
+  const token = req.cookies.access_token;
 
-  if (req.method === "GET") {
-    password = req.query.password;
-  }
-
-  if (!password) {
+  if (!token) {
     return res.status(401).json({
       status: statusMessages.error,
-      message: "Not authorized",
+      message: "Unauthorized",
     });
   }
 
-  const user = await User.findById(id);
+  try {
+    const { id: tokenId } = jwt.verify(token, process.env.SECRET_KEY);
 
-  if (!user) {
-    return res.status(404).json({
-      status: statusMessages.error,
-      message: "User not found",
-    });
-  }
+    if (!tokenId) {
+      return res.status(400).json({
+        status: statusMessages.error,
+        message: "Id is missing",
+      });
+    }
 
-  const isValid = await bcrypt.compare(password, user.password);
-
-  if (!isValid) {
+    if (tokenId !== id) {
+      return res.status(401).json({
+        status: statusMessages.error,
+        message: "Unauthorized",
+      });
+    }
+  } catch (_) {
     return res.status(401).json({
       status: statusMessages.error,
-      message: "Not authorized",
+      message: "Unauthorized",
     });
   }
 
