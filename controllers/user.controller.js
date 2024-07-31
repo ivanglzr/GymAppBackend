@@ -68,28 +68,10 @@ export async function loginUser(req, res) {
   }
 }
 
-export async function getUserByToken(req, res) {
-  const token = req.cookies.access_token;
-
-  console.log(token);
-
-  if (!token) {
-    return res.status(401).json({
-      status: statusMessages.error,
-      message: "Token is missing",
-    });
-  }
+export async function getUser(req, res) {
+  const { id } = req;
 
   try {
-    const { id } = jwt.verify(token, process.env.SECRET_KEY);
-
-    if (!id) {
-      return res.status(400).json({
-        status: statusMessages.error,
-        message: "Id is missing",
-      });
-    }
-
     const user = await User.findById(id);
 
     if (!user) {
@@ -120,34 +102,8 @@ export async function getUserByToken(req, res) {
   }
 }
 
-export async function getUserById(req, res) {
-  const { id } = req.params;
-
-  try {
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).json({
-        status: statusMessages.error,
-        message: "User not found",
-      });
-    }
-
-    return res.json({
-      status: statusMessages.success,
-      message: "User found",
-      user,
-    });
-  } catch (_) {
-    return res.status(500).json({
-      status: statusMessages.error,
-      message: "An error ocurred while finding the user",
-    });
-  }
-}
-
 export async function postUser(req, res) {
-  const { data, error } = validateUser(req.body.user);
+  const { data, error } = validateUser(req.body);
 
   if (error) {
     return res.status(422).json({
@@ -191,9 +147,9 @@ export async function postUser(req, res) {
 }
 
 export async function putUser(req, res) {
-  const { id } = req.params;
+  const { id } = req;
 
-  const { data, error } = validateChangeUserData(req.body.user);
+  const { data, error } = validateChangeUserData(req.body);
 
   if (error) {
     return res.status(422).json({
@@ -232,7 +188,7 @@ export async function putUser(req, res) {
 }
 
 export async function deleteUser(req, res) {
-  const { id } = req.params;
+  const { id } = req;
 
   try {
     const user = await User.findByIdAndDelete(id);

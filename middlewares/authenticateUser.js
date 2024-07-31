@@ -5,16 +5,13 @@ import jwt from "jsonwebtoken";
 import { statusMessages } from "../config.js";
 
 export async function authenticateUser(req, res, next) {
-  const { id } = req.params;
-
-  if (id === undefined || id === null || id.length !== 24) {
-    return res.status(400).json({
-      status: statusMessages.error,
-      message: "Id isn't valid",
-    });
+  if (req.method === "POST" && req.originalUrl === "/user/") {
+    return next();
   }
 
   const token = req.cookies.access_token;
+
+  console.log("Token", token);
 
   if (!token) {
     return res.status(401).json({
@@ -24,21 +21,16 @@ export async function authenticateUser(req, res, next) {
   }
 
   try {
-    const { id: tokenId } = jwt.verify(token, process.env.SECRET_KEY);
+    const { id } = jwt.verify(token, process.env.SECRET_KEY);
 
-    if (!tokenId) {
+    if (id === undefined || id === null || id.length !== 24) {
       return res.status(400).json({
         status: statusMessages.error,
-        message: "Id is missing",
+        message: "Id isn't valid",
       });
     }
 
-    if (tokenId !== id) {
-      return res.status(401).json({
-        status: statusMessages.error,
-        message: "Unauthorized",
-      });
-    }
+    req.id = id;
   } catch (_) {
     return res.status(401).json({
       status: statusMessages.error,

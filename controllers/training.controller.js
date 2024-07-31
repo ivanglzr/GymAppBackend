@@ -8,7 +8,9 @@ import {
 } from "../schemas/training.schema.js";
 
 export async function getTraining(req, res) {
-  const { id, trainingId } = req.params;
+  const { id } = req;
+
+  const { trainingId } = req.params;
 
   if (trainingId && trainingId.length !== 24) {
     return res.status(400).json({
@@ -59,9 +61,9 @@ export async function getTraining(req, res) {
 }
 
 export async function postTraining(req, res) {
-  const { id } = req.params;
+  const { id } = req;
 
-  const { data, error } = validateTraining(req.body.training);
+  const { data, error } = validateTraining(req.body);
 
   if (error) {
     return res.status(422).json({
@@ -82,7 +84,7 @@ export async function postTraining(req, res) {
 
     const newTrainings = user.trainings;
 
-    newTrainings.push(data);
+    newTrainings.splice(0, 0, data);
 
     await User.findByIdAndUpdate(id, {
       ...user,
@@ -102,9 +104,10 @@ export async function postTraining(req, res) {
 }
 
 export async function putTraining(req, res) {
-  const { id, trainingId } = req.params;
+  const { id } = req;
+  const { trainingId } = req.params;
 
-  const { data, error } = validatePartialTraining(req.body.training);
+  const { data, error } = validatePartialTraining(req.body);
 
   if (error) {
     return res.status(422).json({
@@ -130,7 +133,9 @@ export async function putTraining(req, res) {
       });
     }
 
-    const trainingIndex = user.trainings.findIndex((e) => e._id);
+    const trainingIndex = user.trainings.findIndex(
+      (e) => e._id.toString() === trainingId
+    );
 
     if (trainingIndex === -1) {
       return res.status(404).json({
@@ -157,7 +162,8 @@ export async function putTraining(req, res) {
 }
 
 export async function deleteTraining(req, res) {
-  const { id, trainingId } = req.params;
+  const { id } = req;
+  const { trainingId } = req.params;
 
   try {
     const user = await User.findById(id);

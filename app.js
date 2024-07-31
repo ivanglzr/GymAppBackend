@@ -7,8 +7,7 @@ import { authenticateTrainingId } from "./middlewares/authenticateTrainingId.js"
 
 import {
   loginUser,
-  getUserById,
-  getUserByToken,
+  getUser,
   postUser,
   putUser,
   deleteUser,
@@ -35,22 +34,21 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use("/user/:id", authenticateUser);
-app.use("/user/:id/training/:trainingId", authenticateTrainingId);
+app.use("/user/", authenticateUser);
+app.use("/user/training/:trainingId", authenticateTrainingId);
 
-app.get("/user", getUserByToken);
-app.get("/user/:id", getUserById);
-app.get("/user/:id/training/:trainingId?", getTraining);
+app.get("/user", getUser);
+app.get("/user/training/:trainingId?", getTraining);
 
 app.post("/login", loginUser);
 app.post("/user", postUser);
-app.post("/user/:id/training", postTraining);
+app.post("/user/training", postTraining);
 
-app.put("/user/:id", putUser);
-app.put("/user/:id/training/:trainingId", putTraining);
+app.put("/user", putUser);
+app.put("/user/training/:trainingId", putTraining);
 
-app.delete("/user/:id", deleteUser);
-app.delete("/user/:id/training/:trainingId", deleteTraining);
+app.delete("/user", deleteUser);
+app.delete("/user/training/:trainingId", deleteTraining);
 
 app.post("/exercise", postExercise);
 
