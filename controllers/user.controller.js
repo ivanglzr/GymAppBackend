@@ -68,6 +68,12 @@ export async function loginUser(req, res) {
   }
 }
 
+export async function logoutUser(req, res) {
+  return res
+    .clearCookie("access_token")
+    .json({ status: statusMessages.success, message: "Logout successful" });
+}
+
 export async function getUser(req, res) {
   const { id } = req;
 

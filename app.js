@@ -7,6 +7,7 @@ import { authenticateTrainingId } from "./middlewares/authenticateTrainingId.js"
 
 import {
   loginUser,
+  logoutUser,
   getUser,
   postUser,
   putUser,
@@ -41,6 +42,7 @@ app.get("/user", getUser);
 app.get("/user/training/:trainingId?", getTraining);
 
 app.post("/login", loginUser);
+app.post("/logout", logoutUser);
 app.post("/user", postUser);
 app.post("/user/training", postTraining);
 

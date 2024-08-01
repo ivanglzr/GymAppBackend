@@ -11,8 +11,6 @@ export async function authenticateUser(req, res, next) {
 
   const token = req.cookies.access_token;
 
-  console.log("Token", token);
-
   if (!token) {
     return res.status(401).json({
       status: statusMessages.error,
