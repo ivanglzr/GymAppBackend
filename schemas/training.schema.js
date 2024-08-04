@@ -12,15 +12,16 @@ export const exerciseSchema = z.array(
   })
 );
 
-export const trainingsSchema = z.object({
+export const trainingSchema = z.object({
   duration: z.number(),
+  date: z.string().optional(),
   exercises: exerciseSchema,
 });
 
 export function validateTraining(training) {
-  return trainingsSchema.safeParse(training);
+  return trainingSchema.safeParse(training);
 }
 
 export function validatePartialTraining(training) {
-  return trainingsSchema.partial().safeParse(training);
+  return trainingSchema.partial().safeParse(training);
 }

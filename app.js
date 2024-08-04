@@ -39,7 +39,7 @@ app.use("/user/", authenticateUser);
 app.use("/user/training/:trainingId", authenticateTrainingId);
 
 app.get("/user", getUser);
-app.get("/user/training/:trainingId?", getTraining);
+app.get("/user/training/:trainingId", getTraining);
 
 app.post("/login", loginUser);
 app.post("/logout", logoutUser);

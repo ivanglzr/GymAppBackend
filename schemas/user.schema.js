@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { trainingsSchema } from "./training.schema.js";
+import { trainingSchema } from "./training.schema.js";
 
 const userSchema = z.object({
   name: z.string(),
@@ -9,7 +9,7 @@ const userSchema = z.object({
   age: z.number(),
   weight: z.number(),
   height: z.number(),
-  trainings: z.array(trainingsSchema),
+  trainings: z.array(trainingSchema),
 });
 
 const loginFormSchema = z.object({

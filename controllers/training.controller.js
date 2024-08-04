@@ -12,7 +12,7 @@ export async function getTraining(req, res) {
 
   const { trainingId } = req.params;
 
-  if (trainingId && trainingId.length !== 24) {
+  if (!trainingId || trainingId.length !== 24) {
     return res.status(400).json({
       status: statusMessages.error,
       message: "Id isn't valid",
@@ -38,11 +38,7 @@ export async function getTraining(req, res) {
       });
     }
 
-    if (!trainingId) {
-      return res.json({ status: statusMessages.success, trainings });
-    }
-
-    const training = trainings.find((e) => e._id.toString() === trainingId);
+    const training = trainings.find(e => e._id.toString() === trainingId);
 
     if (!training) {
       return res.status(404).json({
@@ -82,12 +78,9 @@ export async function postTraining(req, res) {
       });
     }
 
-    const newTrainings = user.trainings;
-
-    newTrainings.splice(0, 0, data);
+    const newTrainings = [data, ...user.trainings];
 
     await User.findByIdAndUpdate(id, {
-      ...user,
       trainings: newTrainings,
     });
 
@@ -134,7 +127,7 @@ export async function putTraining(req, res) {
     }
 
     const trainingIndex = user.trainings.findIndex(
-      (e) => e._id.toString() === trainingId
+      e => e._id.toString() === trainingId
     );
 
     if (trainingIndex === -1) {
@@ -178,10 +171,10 @@ export async function deleteTraining(req, res) {
     const newTrainings = user.trainings;
 
     const trainingIndex = newTrainings.findIndex(
-      (e) => e._id.toString() === trainingId
+      e => e._id.toString() === trainingId
     );
 
-    if (trainingId === -1) {
+    if (trainingIndex === -1) {
       return res.status(404).json({
         status: statusMessages.error,
         message: "Training not found",
