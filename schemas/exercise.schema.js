@@ -7,7 +7,6 @@ export const createExerciseSchema = z.object({
   description: z.string().optional(),
   equipment: z.enum(exerciseEquipments),
   muscles: z.enum(muscularGroups),
-  userId: z.string().length(24),
 });
 
 export function validateExerciseSchema(exercise) {

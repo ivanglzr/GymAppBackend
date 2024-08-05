@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { authenticateTrainingId } from "./middlewares/authenticateTrainingId.js";
+import { authenticateExerciseId } from "./middlewares/authenticateExerciseId.js";
 
 import {
   loginUser,
@@ -21,7 +22,13 @@ import {
   putTraining,
 } from "./controllers/training.controller.js";
 
-import { postExercise } from "./controllers/exercise.controller.js";
+import {
+  getUserExercises,
+  postExercise,
+  deleteExercise,
+  putExercise,
+  getUserExerciseById,
+} from "./controllers/exercise.controller.js";
 
 const app = express();
 
@@ -52,6 +59,17 @@ app.put("/user/training/:trainingId", putTraining);
 app.delete("/user", deleteUser);
 app.delete("/user/training/:trainingId", deleteTraining);
 
+// Exercises
+app.use("/exercise", authenticateUser);
+app.use("/exercise/:exerciseId", authenticateExerciseId);
+
+app.get("/exercise", getUserExercises);
+app.get("/exercise/:exerciseId", getUserExerciseById);
+
 app.post("/exercise", postExercise);
+
+app.put("/exercise/:exerciseId", putExercise);
+
+app.delete("/exercise/:exerciseId", deleteExercise);
 
 export default app;

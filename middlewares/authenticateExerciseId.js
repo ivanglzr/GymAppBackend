@@ -1,12 +1,12 @@
 import { statusMessages } from "../config.js";
 
-export async function authenticateTrainingId(req, res, next) {
-  const { trainingId } = req.params;
+export async function authenticateExerciseId(req, res, next) {
+  const { exerciseId } = req.params;
 
   if (
-    trainingId === undefined ||
-    trainingId === null ||
-    trainingId.length !== 24
+    exerciseId === undefined ||
+    exerciseId === null ||
+    exerciseId.length !== 24
   ) {
     return res.status(400).json({
       status: statusMessages.error,
