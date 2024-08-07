@@ -76,7 +76,7 @@ export async function postExercise(req, res) {
   try {
     const exerciseInDb = await Exercise.find({
       name: data.name,
-      userId: new Types.ObjectId.createFromHexString(id),
+      userId: Types.ObjectId.createFromHexString(id),
     });
 
     if (exerciseInDb.length > 0) {
@@ -88,7 +88,7 @@ export async function postExercise(req, res) {
 
     const exercise = new Exercise({
       ...data,
-      userId: new Types.ObjectId.createFromHexString(id),
+      userId: Types.ObjectId.createFromHexString(id),
     });
 
     await exercise.save();
@@ -97,7 +97,9 @@ export async function postExercise(req, res) {
       status: statusMessages.success,
       message: "Exercise created",
     });
-  } catch (_) {
+  } catch (err) {
+    console.error(err);
+
     return res.status(500).json({
       status: statusMessages.error,
       message: "An error ocurred while posting the exercise",
