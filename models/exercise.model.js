@@ -10,6 +10,10 @@ const ExerciseModel = new mongoose.Schema({
     enum: exerciseEquipments,
     required: true,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   muscles: {
     type: String,
     enum: muscularGroups,

@@ -63,7 +63,7 @@ export async function loginUser(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while login in",
+      message: "An error occurred while login in",
     });
   }
 }
@@ -147,7 +147,7 @@ export async function postUser(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while registering the new user",
+      message: "An error occurred while registering the new user",
     });
   }
 }
@@ -188,7 +188,7 @@ export async function putUser(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while editing user",
+      message: "An error occurred while editing user",
     });
   }
 }
@@ -213,7 +213,7 @@ export async function deleteUser(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while deleting the user",
+      message: "An error occurred while deleting the user",
     });
   }
 }

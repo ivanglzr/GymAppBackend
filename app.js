@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import multer from "multer";
+import path from "node:path";
 
 import { authenticateUser } from "./middlewares/authenticateUser.js";
 import { authenticateTrainingId } from "./middlewares/authenticateTrainingId.js";
@@ -28,15 +30,32 @@ import {
   deleteExercise,
   putExercise,
   getUserExerciseById,
+  uploadImage,
 } from "./controllers/exercise.controller.js";
 
 const app = express();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = path.basename(file.originalname, ext);
+
+    cb(null, `${name}-${Date.now()}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage,
+});
 
 app.disable("x-powered-by");
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // Asegúrate de que coincide con el origen del cliente
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -69,6 +88,7 @@ app.get("/exercise/:exerciseId", getUserExerciseById);
 app.post("/exercise", postExercise);
 
 app.put("/exercise/:exerciseId", putExercise);
+app.put("/exercise/:exerciseId/image", upload.single("file0"), uploadImage);
 
 app.delete("/exercise/:exerciseId", deleteExercise);
 

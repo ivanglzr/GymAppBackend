@@ -48,7 +48,7 @@ export async function getTraining(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while getting trainings",
+      message: "An error occurred while getting trainings",
     });
   }
 }
@@ -88,7 +88,7 @@ export async function postTraining(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while posting the training",
+      message: "An error occurred while posting the training",
     });
   }
 }
@@ -146,7 +146,7 @@ export async function putTraining(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while editing the training",
+      message: "An error occurred while editing the training",
     });
   }
 }
@@ -189,7 +189,7 @@ export async function deleteTraining(req, res) {
   } catch (_) {
     return res.status(500).json({
       status: statusMessages.error,
-      message: "An error ocurred while deleting the training",
+      message: "An error occurred while deleting the training",
     });
   }
 }
