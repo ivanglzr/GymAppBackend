@@ -14,7 +14,7 @@ const ExerciseModel = new mongoose.Schema({
     type: String,
     required: true,
   },
-  muscles: {
+  muscle: {
     type: String,
     enum: muscularGroups,
     required: true,
