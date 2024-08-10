@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 # Multer files
-./uploads/*
+uploads/*
+!uploads/
