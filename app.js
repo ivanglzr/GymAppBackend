@@ -18,10 +18,11 @@ import {
 } from "./controllers/user.controller.js";
 
 import {
-  deleteTraining,
   getTraining,
+  getTrainings,
   postTraining,
   putTraining,
+  deleteTraining,
 } from "./controllers/training.controller.js";
 
 import {
@@ -66,6 +67,7 @@ app.use("/user/training/:trainingId", authenticateTrainingId);
 
 app.get("/user", getUser);
 app.get("/user/training/:trainingId", getTraining);
+app.get("/user/training", getTrainings);
 
 app.post("/login", loginUser);
 app.post("/logout", logoutUser);

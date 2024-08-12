@@ -53,6 +53,41 @@ export async function getTraining(req, res) {
   }
 }
 
+export async function getTrainings(req, res) {
+  const { id } = req;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User not found",
+      });
+    }
+
+    const { trainings } = user;
+
+    if (trainings.length === 0) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "User hasn't any trainings",
+      });
+    }
+
+    return res.json({
+      status: statusMessages.success,
+      message: "Trainings found",
+      trainings,
+    });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error occurred while finding the trainings",
+    });
+  }
+}
+
 export async function postTraining(req, res) {
   const { id } = req;
 
