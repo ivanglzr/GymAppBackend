@@ -92,7 +92,6 @@ export async function getUser(req, res) {
       age: user.age,
       weight: user.weight,
       height: user.height,
-      trainings: user.trainings,
     };
 
     return res.json({
