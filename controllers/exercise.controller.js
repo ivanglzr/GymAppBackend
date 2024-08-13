@@ -1,4 +1,5 @@
-import fs from "fs/promises";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 import { Types } from "mongoose";
 import Exercise from "../models/exercise.model.js";
@@ -9,6 +10,16 @@ import {
   validateExerciseSchema,
   validatePartialExerciseSchema,
 } from "../schemas/exercise.schema.js";
+
+const deleteImage = async imagePath => {
+  if (imagePath && imagePath !== "uploads/default.png") {
+    try {
+      await fs.unlink(imagePath);
+    } catch (err) {
+      console.error("Failed to delete image:", err);
+    }
+  }
+};
 
 export async function getUserExercises(req, res) {
   const { id } = req;
@@ -62,6 +73,31 @@ export async function getUserExerciseById(req, res) {
   }
 }
 
+export async function getImage(req, res) {
+  const { image } = req.params;
+
+  const imagePath = path.join(process.cwd(), "uploads", image);
+
+  try {
+    await fs.access(imagePath);
+    return res.sendFile(imagePath);
+  } catch (err) {
+    console.error("Error accessing image:", err);
+
+    // Si falla, intenta servir la imagen por defecto
+    const defaultImagePath = path.join(process.cwd(), "uploads", "default.png");
+    try {
+      await fs.access(defaultImagePath);
+      return res.sendFile(defaultImagePath);
+    } catch (_) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "Image not found",
+      });
+    }
+  }
+}
+
 export async function postExercise(req, res) {
   const { id } = req;
 
@@ -90,7 +126,7 @@ export async function postExercise(req, res) {
     const exercise = new Exercise({
       ...data,
       userId: Types.ObjectId.createFromHexString(id),
-      image: "uploads/default.png",
+      image: "default.png",
     });
 
     await exercise.save();
@@ -120,6 +156,8 @@ export async function uploadImage(req, res) {
   const ext = file.mimetype.split("/")[1];
 
   if (ext !== "png" && ext !== "jpeg" && ext !== "jpg" && ext !== "png") {
+    await deleteImage(file.path);
+
     return res.status(400).json({
       status: statusMessages.error,
       message: "File type isn't valid",
@@ -130,10 +168,12 @@ export async function uploadImage(req, res) {
 
   try {
     const exercise = await Exercise.findByIdAndUpdate(exerciseId, {
-      image: file.path,
+      image: file.filename,
     });
 
     if (!exercise) {
+      await deleteImage(file.path);
+
       return res.status(404).json({
         status: statusMessages.error,
         message: "Exercise not found",
@@ -206,13 +246,7 @@ export async function deleteExercise(req, res) {
       });
     }
 
-    if (exercise.image && exercise.image !== "uploads/default.png") {
-      try {
-        await fs.unlink(exercise.image);
-      } catch (err) {
-        console.error("Failed to delete image:", err);
-      }
-    }
+    await deleteImage(exercise.image);
 
     return res.json({
       status: statusMessages.success,

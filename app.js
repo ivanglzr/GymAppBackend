@@ -26,6 +26,7 @@ import {
 } from "./controllers/training.controller.js";
 
 import {
+  getImage,
   getUserExercises,
   postExercise,
   deleteExercise,
@@ -86,6 +87,7 @@ app.use("/exercise/:exerciseId", authenticateExerciseId);
 
 app.get("/exercise", getUserExercises);
 app.get("/exercise/:exerciseId", getUserExerciseById);
+app.get("/exercise/image/:image", getImage);
 
 app.post("/exercise", postExercise);
 

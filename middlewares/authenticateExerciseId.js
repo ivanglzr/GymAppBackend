@@ -1,6 +1,10 @@
 import { statusMessages } from "../config.js";
 
 export async function authenticateExerciseId(req, res, next) {
+  if (req.originalUrl.includes("/exercise/image")) {
+    return next();
+  }
+
   const { exerciseId } = req.params;
 
   if (
