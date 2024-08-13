@@ -36,6 +36,16 @@ import {
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.disable("x-powered-by");
+app.use(express.json());
+app.use(cookieParser());
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -51,16 +61,6 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
 });
-
-app.disable("x-powered-by");
-app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
-app.use(cookieParser());
 
 app.use("/user/", authenticateUser);
 app.use("/user/training/:trainingId", authenticateTrainingId);
