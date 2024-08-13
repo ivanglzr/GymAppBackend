@@ -119,7 +119,7 @@ export async function uploadImage(req, res) {
 
   const ext = file.mimetype.split("/")[1];
 
-  if (ext !== "png" || ext !== "jpeg" || ext !== "jpg" || ext !== "png") {
+  if (ext !== "png" && ext !== "jpeg" && ext !== "jpg" && ext !== "png") {
     return res.status(400).json({
       status: statusMessages.error,
       message: "File type isn't valid",
