@@ -132,3 +132,7 @@ dist
 # Multer files
 uploads/*
 !uploads/
+
+# Locks
+package-lock.json
+pnpm-lock.yaml
