@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 
 import app from "./app.js";
 
+const PORT = process.env.PORT ?? 3900;
+
 mongoose
   .connect(process.env.DB_URI, {
     family: 4,
@@ -11,6 +13,4 @@ mongoose
   .then(() => console.log("Connected to DB"))
   .catch(() => console.error("Conexion failed"));
 
-app.listen(process.env.PORT, () =>
-  console.log("Server listening on port", process.env.PORT)
-);
+app.listen(PORT, () => console.log("Server listening on port", PORT));
