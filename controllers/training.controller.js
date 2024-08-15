@@ -25,9 +25,9 @@ export async function getTraining(req, res) {
     const { trainings } = user;
 
     if (trainings.length === 0) {
-      return res.status(404).json({
-        status: statusMessages.error,
-        message: "User hasn't any trainings",
+      return res.status(200).json({
+        status: statusMessages.success,
+        message: "User doesn't have any trainings",
       });
     }
 
@@ -69,9 +69,9 @@ export async function getTrainings(req, res) {
     const { trainings } = user;
 
     if (trainings.length === 0) {
-      return res.status(404).json({
-        status: statusMessages.error,
-        message: "User hasn't any trainings",
+      return res.status(200).json({
+        status: statusMessages.success,
+        message: "User doesn't have any trainings",
       });
     }
 

@@ -28,9 +28,9 @@ export async function getUserExercises(req, res) {
     const exercises = await Exercise.find({ userId: id });
 
     if (exercises.length === 0) {
-      return res.status(404).json({
-        status: statusMessages.error,
-        message: "Exercises not found",
+      return res.status(200).json({
+        status: statusMessages.success,
+        message: "User doesn't have any exercises",
       });
     }
 
