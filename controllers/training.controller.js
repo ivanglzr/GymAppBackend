@@ -24,14 +24,7 @@ export async function getTraining(req, res) {
 
     const { trainings } = user;
 
-    if (trainings.length === 0) {
-      return res.status(200).json({
-        status: statusMessages.success,
-        message: "User doesn't have any trainings",
-      });
-    }
-
-    const training = trainings.find(e => e._id.toString() === trainingId);
+    const training = trainings.find((e) => e._id.toString() === trainingId);
 
     if (!training) {
       return res.status(404).json({
@@ -68,16 +61,14 @@ export async function getTrainings(req, res) {
 
     const { trainings } = user;
 
-    if (trainings.length === 0) {
-      return res.status(200).json({
-        status: statusMessages.success,
-        message: "User doesn't have any trainings",
-      });
-    }
+    const message =
+      trainings.length === 0
+        ? "User doesn't have any trainings"
+        : "Trainings found";
 
     return res.json({
       status: statusMessages.success,
-      message: "Trainings found",
+      message,
       trainings,
     });
   } catch (_) {
@@ -159,7 +150,7 @@ export async function putTraining(req, res) {
     }
 
     const trainingIndex = user.trainings.findIndex(
-      e => e._id.toString() === trainingId
+      (e) => e._id.toString() === trainingId
     );
 
     if (trainingIndex === -1) {
@@ -203,7 +194,7 @@ export async function deleteTraining(req, res) {
     const newTrainings = user.trainings;
 
     const trainingIndex = newTrainings.findIndex(
-      e => e._id.toString() === trainingId
+      (e) => e._id.toString() === trainingId
     );
 
     if (trainingIndex === -1) {

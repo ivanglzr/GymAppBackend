@@ -11,7 +11,7 @@ import {
   validatePartialExerciseSchema,
 } from "../schemas/exercise.schema.js";
 
-const deleteImage = async imagePath => {
+const deleteImage = async (imagePath) => {
   if (imagePath && imagePath !== "uploads/default.png") {
     try {
       await fs.unlink(imagePath);
@@ -27,16 +27,14 @@ export async function getUserExercises(req, res) {
   try {
     const exercises = await Exercise.find({ userId: id });
 
-    if (exercises.length === 0) {
-      return res.status(200).json({
-        status: statusMessages.success,
-        message: "User doesn't have any exercises",
-      });
-    }
+    const message =
+      exercises.length === 0
+        ? "User doesn't have any exercises"
+        : "User exercises found";
 
     return res.json({
       status: statusMessages.success,
-      message: "User exercises found",
+      message,
       exercises,
     });
   } catch (_) {
