@@ -132,6 +132,7 @@ dist
 # Multer files
 uploads/*
 !uploads/
+!uploads/default.png
 
 # Locks
 package-lock.json
