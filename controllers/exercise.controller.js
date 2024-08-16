@@ -127,11 +127,12 @@ export async function postExercise(req, res) {
       image: "default.png",
     });
 
-    await exercise.save();
+    const { _id } = await exercise.save();
 
     return res.status(201).json({
       status: statusMessages.success,
       message: "Exercise created",
+      id: _id,
     });
   } catch (_) {
     return res.status(500).json({
