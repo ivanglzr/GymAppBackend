@@ -51,10 +51,10 @@ export async function loginUser(req, res) {
 
     return res
       .cookie("access_token", token, {
-        httpOnly: true, // Evita acceso a la cookie desde JavaScript del lado del cliente
-        secure: process.env.NODE_ENV === "production", // Asegúrate de usar https en producción
-        sameSite: "lax", // Ajusta según tus necesidades
-        maxAge: 60 * 60 * 1000, // 1 hora
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000,
       })
       .json({
         status: statusMessages.success,

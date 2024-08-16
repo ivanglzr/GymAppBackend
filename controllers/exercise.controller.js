@@ -15,9 +15,7 @@ const deleteImage = async (imagePath) => {
   if (imagePath && imagePath !== "uploads/default.png") {
     try {
       await fs.unlink(imagePath);
-    } catch (err) {
-      console.error("Failed to delete image:", err);
-    }
+    } catch (err) {}
   }
 };
 
@@ -80,9 +78,6 @@ export async function getImage(req, res) {
     await fs.access(imagePath);
     return res.sendFile(imagePath);
   } catch (err) {
-    console.error("Error accessing image:", err);
-
-    // Si falla, intenta servir la imagen por defecto
     const defaultImagePath = path.join(process.cwd(), "uploads", "default.png");
     try {
       await fs.access(defaultImagePath);
