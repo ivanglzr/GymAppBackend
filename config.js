@@ -37,3 +37,6 @@ export const muscularGroups = [
   "Adductors", // Aductores
   "Abductors", // Abductores
 ];
+
+export const imagesDirectory = "uploads";
+export const defaultImageName = "default.png";

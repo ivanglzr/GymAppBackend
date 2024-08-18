@@ -4,17 +4,24 @@ import path from "node:path";
 import { Types } from "mongoose";
 import Exercise from "../models/exercise.model.js";
 
-import { statusMessages } from "../config.js";
+import {
+  statusMessages,
+  imagesDirectory,
+  defaultImageName,
+} from "../config.js";
 
 import {
   validateExerciseSchema,
   validatePartialExerciseSchema,
 } from "../schemas/exercise.schema.js";
 
+const getImagePath = (imageName) =>
+  path.join(process.cwd(), imagesDirectory, imageName);
+
 const deleteImage = async (imagePath) => {
-  if (imagePath && imagePath !== "uploads/default.png") {
+  if (imagePath && imagePath !== `${imagesDirectory}/${defaultImageName}`) {
     try {
-      await fs.unlink(imagePath);
+      await fs.unlink(path.join(process.cwd(), imagePath));
     } catch (err) {}
   }
 };
@@ -72,13 +79,13 @@ export async function getUserExerciseById(req, res) {
 export async function getImage(req, res) {
   const { image } = req.params;
 
-  const imagePath = path.join(process.cwd(), "uploads", image);
+  const imagePath = getImagePath(image);
 
   try {
     await fs.access(imagePath);
     return res.sendFile(imagePath);
   } catch (err) {
-    const defaultImagePath = path.join(process.cwd(), "uploads", "default.png");
+    const defaultImagePath = getImagePath(defaultImageName);
     try {
       await fs.access(defaultImagePath);
       return res.sendFile(defaultImagePath);
@@ -119,7 +126,7 @@ export async function postExercise(req, res) {
     const exercise = new Exercise({
       ...data,
       userId: Types.ObjectId.createFromHexString(id),
-      image: "default.png",
+      image: defaultImageName,
     });
 
     const { _id } = await exercise.save();
@@ -240,7 +247,7 @@ export async function deleteExercise(req, res) {
       });
     }
 
-    await deleteImage(exercise.image);
+    await deleteImage(`${imagesDirectory}/${exercise.image}`);
 
     return res.json({
       status: statusMessages.success,
