@@ -76,6 +76,45 @@ export async function getUserExerciseById(req, res) {
   }
 }
 
+export async function getUserExerciseBySearch(req, res) {
+  const { id } = req;
+  const { search } = req.params;
+
+  if (typeof search !== "string" || search.length === 0) {
+    return res.status(400).json({
+      status: statusMessages.error,
+      message: "Search isn't valid",
+    });
+  }
+
+  try {
+    const regex = new RegExp(search, "i");
+
+    const exercises = await Exercise.find({
+      userId: id,
+      name: { $regex: regex },
+    });
+
+    if (exercises.length === 0) {
+      return res.status(404).json({
+        status: statusMessages.error,
+        message: "Exercise not found",
+      });
+    }
+
+    return res.json({
+      status: statusMessages.success,
+      message: "Exercises found",
+      exercises,
+    });
+  } catch (_) {
+    return res.status(500).json({
+      status: statusMessages.error,
+      message: "An error occrrued while finding the exercise",
+    });
+  }
+}
+
 export async function getImage(req, res) {
   const { image } = req.params;
 

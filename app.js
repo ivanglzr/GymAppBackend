@@ -33,6 +33,7 @@ import {
   putExercise,
   getUserExerciseById,
   uploadImage,
+  getUserExerciseBySearch,
 } from "./controllers/exercise.controller.js";
 
 const app = express();
@@ -84,11 +85,14 @@ app.delete("/user/training/:trainingId", deleteTraining);
 
 // Exercises
 app.use("/exercise", authenticateUser);
-app.use("/exercise/:exerciseId", authenticateExerciseId);
 
 app.get("/exercise", getUserExercises);
-app.get("/exercise/:exerciseId", getUserExerciseById);
+app.get("/exercise/search/:search", getUserExerciseBySearch);
 app.get("/exercise/image/:image", getImage);
+
+app.use("/exercise/:exerciseId", authenticateExerciseId);
+
+app.get("/exercise/:exerciseId", getUserExerciseById);
 
 app.post("/exercise", postExercise);
 
