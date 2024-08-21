@@ -137,3 +137,5 @@ uploads/*
 # Locks
 package-lock.json
 pnpm-lock.yaml
+
+blocked.json
