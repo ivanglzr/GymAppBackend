@@ -40,3 +40,5 @@ export const muscularGroups = [
 
 export const imagesDirectory = "uploads";
 export const defaultImageName = "default.png";
+
+export const blockedIPFile = "blocked.json";
