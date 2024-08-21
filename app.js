@@ -33,8 +33,11 @@ import {
   putExercise,
   getUserExerciseById,
   uploadImage,
-  getUserExerciseBySearch,
+  getUserExercisesBySearch,
 } from "./controllers/exercise.controller.js";
+
+import { blockIPs } from "./middlewares/blockIp.js";
+import { checkSearchParam } from "./middlewares/checkSearchParam.js";
 
 const app = express();
 
@@ -47,6 +50,8 @@ app.use(
 app.disable("x-powered-by");
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(blockIPs);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -87,8 +92,9 @@ app.delete("/user/training/:trainingId", deleteTraining);
 app.use("/exercise", authenticateUser);
 
 app.get("/exercise", getUserExercises);
-app.get("/exercise/search/:search", getUserExerciseBySearch);
 app.get("/exercise/image/:image", getImage);
+
+app.get("/exercise/search/:search", checkSearchParam, getUserExercisesBySearch);
 
 app.use("/exercise/:exerciseId", authenticateExerciseId);
 

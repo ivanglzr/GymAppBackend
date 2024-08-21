@@ -15,10 +15,10 @@ import {
   validatePartialExerciseSchema,
 } from "../schemas/exercise.schema.js";
 
-const getImagePath = imageName =>
+const getImagePath = (imageName) =>
   path.join(process.cwd(), imagesDirectory, imageName);
 
-const deleteImage = async imagePath => {
+const deleteImage = async (imagePath) => {
   if (imagePath && imagePath !== `${imagesDirectory}/${defaultImageName}`) {
     try {
       await fs.unlink(path.join(process.cwd(), imagePath));
@@ -76,16 +76,9 @@ export async function getUserExerciseById(req, res) {
   }
 }
 
-export async function getUserExerciseBySearch(req, res) {
+export async function getUserExercisesBySearch(req, res) {
   const { id } = req;
   const { search } = req.params;
-
-  if (typeof search !== "string" || search.length === 0) {
-    return res.status(400).json({
-      status: statusMessages.error,
-      message: "Search isn't valid",
-    });
-  }
 
   try {
     const regex = new RegExp(search, "i");
@@ -94,13 +87,6 @@ export async function getUserExerciseBySearch(req, res) {
       userId: id,
       name: { $regex: regex },
     });
-
-    if (exercises.length === 0) {
-      return res.status(404).json({
-        status: statusMessages.error,
-        message: "Exercise not found",
-      });
-    }
 
     return res.json({
       status: statusMessages.success,
