@@ -15,10 +15,10 @@ import {
   validatePartialExerciseSchema,
 } from "../schemas/exercise.schema.js";
 
-const getImagePath = (imageName) =>
+const getImagePath = imageName =>
   path.join(process.cwd(), imagesDirectory, imageName);
 
-const deleteImage = async (imagePath) => {
+const deleteImage = async imagePath => {
   if (imagePath && imagePath !== `${imagesDirectory}/${defaultImageName}`) {
     try {
       await fs.unlink(path.join(process.cwd(), imagePath));
@@ -219,6 +219,8 @@ export async function uploadImage(req, res) {
         message: "Exercise not found",
       });
     }
+
+    await deleteImage(`${imagesDirectory}/${exercise.image}`);
 
     return res.json({
       status: statusMessages.success,
