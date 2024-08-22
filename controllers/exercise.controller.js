@@ -78,7 +78,7 @@ export async function getUserExerciseById(req, res) {
 
 export async function getUserExercisesBySearch(req, res) {
   const { id } = req;
-  const { search } = req.params;
+  const { search } = req.query;
 
   try {
     const regex = new RegExp(search, "i");

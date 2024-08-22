@@ -94,7 +94,7 @@ app.use("/exercise", authenticateUser);
 app.get("/exercise", getUserExercises);
 app.get("/exercise/image/:image", getImage);
 
-app.get("/exercise/search/:search", checkSearchParam, getUserExercisesBySearch);
+app.get("/exercise/search/", checkSearchParam, getUserExercisesBySearch);
 
 app.use("/exercise/:exerciseId", authenticateExerciseId);
 

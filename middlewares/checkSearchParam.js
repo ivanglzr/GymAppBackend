@@ -3,7 +3,7 @@ import { statusMessages } from "../config.js";
 import { blockIP } from "./blockIp.js";
 
 export async function checkSearchParam(req, res, next) {
-  const { search } = req.params;
+  const { search } = req.query;
 
   if (!search) {
     return res.status(400).json({
