@@ -51,8 +51,6 @@ app.disable("x-powered-by");
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(blockIPs);
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -70,6 +68,13 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 },
 });
 
+app.post("/login", loginUser);
+app.post("/logout", logoutUser);
+
+app.use(blockIPs);
+
+app.post("/user", postUser);
+
 app.use("/user/", authenticateUser);
 app.use("/user/training/:trainingId", authenticateTrainingId);
 
@@ -77,9 +82,6 @@ app.get("/user", getUser);
 app.get("/user/training/:trainingId", getTraining);
 app.get("/user/training", getTrainings);
 
-app.post("/login", loginUser);
-app.post("/logout", logoutUser);
-app.post("/user", postUser);
 app.post("/user/training", postTraining);
 
 app.put("/user", putUser);

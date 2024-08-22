@@ -5,10 +5,6 @@ import jwt from "jsonwebtoken";
 import { statusMessages } from "../config.js";
 
 export async function authenticateUser(req, res, next) {
-  if (req.method === "POST" && req.originalUrl === "/user/") {
-    return next();
-  }
-
   const token = req.cookies.access_token;
 
   if (!token) {
