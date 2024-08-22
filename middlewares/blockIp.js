@@ -30,8 +30,6 @@ const saveBlockedIPs = async () => {
 const blockIPs = async (req, res, next) => {
   const userIP = req.ip;
 
-  console.log(userIP);
-
   if (blockedIPs.has(userIP)) {
     return res.status(403).send("Forbidden: Access is denied.");
   }
