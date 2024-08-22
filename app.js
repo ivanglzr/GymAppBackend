@@ -68,11 +68,11 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 },
 });
 
-app.post("/login", loginUser);
 app.post("/logout", logoutUser);
 
 app.use(blockIPs);
 
+app.post("/login", loginUser);
 app.post("/user", postUser);
 
 app.use("/user/", authenticateUser);
