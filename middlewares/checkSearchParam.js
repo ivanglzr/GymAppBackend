@@ -1,4 +1,3 @@
-import lodash from "lodash";
 import { statusMessages } from "../config.js";
 import { blockIP } from "./blockIp.js";
 
@@ -12,9 +11,9 @@ export async function checkSearchParam(req, res, next) {
     });
   }
 
-  const sanitizedSearch = lodash.escape(search);
+  const sanitazedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-  if (sanitizedSearch !== search) {
+  if (search !== sanitazedSearch) {
     blockIP(req.ip);
     return res.status(403).json({
       status: statusMessages.error,
